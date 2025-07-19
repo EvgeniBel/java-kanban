@@ -1,3 +1,6 @@
+package manager;
+
+import tasks.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -134,10 +137,10 @@ public class ManagerTask {
         for (Integer subtaskId : epic.getSubtaskId()) {
             StatusTask subtaskStatus = listSubtask.get(subtaskId).getStatus();
             switch (subtaskStatus) {
-                case NEW:
+                case StatusTask.NEW:
                     countNew++;
                     break;
-                case DONE:
+                case StatusTask.DONE:
                     countDONE++;
                     break;
             }

@@ -1,36 +1,37 @@
-import java.util.ArrayList;
+package tasks;
 
-public class Epic extends Task{
-    ArrayList<Integer> subtaskId= new ArrayList<>();
+public class Subtask extends Task {
+    protected int epicId;
 
-    public Epic(String name, String description, StatusTask status){
+    public Subtask(String name, String description, StatusTask status, int epicId) {
         super(name, description, status);
-    }
-    public Epic(int id, String name, String description, StatusTask status){
-        super(id, name, description, status);
+        this.epicId = epicId;
     }
 
-    public void addSubtaskId(int id){
-        subtaskId.add(id);
+    public Subtask(int id, String name, String description, StatusTask status, int epicId) {
+        super(id, name, description, status);
+        this.epicId = epicId;
     }
-    public ArrayList<Integer> getSubtaskId(){
-        return subtaskId;
+
+    public int getEpicId() {
+        return epicId;
     }
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "tasks.Subtask{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
                 '}';
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || obj.getClass() != getClass()) return false;
-        Epic epic = (Epic) obj;
-        return id == epic.id;
+        Subtask subtasc = (Subtask) obj;
+        return id == subtasc.id;
     }
 }
