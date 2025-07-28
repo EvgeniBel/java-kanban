@@ -1,4 +1,4 @@
-package tasks;
+package ru.javacource.schedule.tasks;
 
 import java.util.ArrayList;
 
@@ -20,14 +20,22 @@ public class Epic extends Task {
     }
 
     @Override
+    public Epic copy(){
+        Epic copy = new Epic(this.id, this.name, this.description, this.status);
+        copy.subtaskId = new ArrayList<>(this.subtaskId);
+        return copy;
+    }
+
+    @Override
     public String toString() {
-        return "tasks.Epic{" +
+        return "Epic{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
                 '}';
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

@@ -1,4 +1,4 @@
-package tasks;
+package ru.javacource.schedule.tasks;
 
 public class Subtask extends Task {
     protected int epicId;
@@ -18,8 +18,13 @@ public class Subtask extends Task {
     }
 
     @Override
+    public Subtask copy(){
+        return new Subtask(this.id, this.name, this.description, this.status, this.epicId);
+    }
+
+    @Override
     public String toString() {
-        return "tasks.Subtask{" +
+        return "Subtask{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +

@@ -1,4 +1,6 @@
-package tasks;
+package ru.javacource.schedule.tasks;
+
+import ru.javacource.schedule.manager.Managers;
 
 import java.util.Objects;
 
@@ -12,13 +14,20 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
-    }
+        }
 
     public Task(int id, String name, String description, StatusTask status) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
+    }
+
+    public Task(Task task){
+        this.id = task.id;;
+        this.name = task.name;
+        this.status = task.status;
+        this.description = task.description;
     }
 
     public int getId() {
@@ -52,6 +61,10 @@ public class Task {
         return this.status;
     }
 
+    public Task copy(){
+        return new Task(this.id, this.name, this.description, this.status);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -67,7 +80,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "tasks.Task{" +
+        return "Task{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
