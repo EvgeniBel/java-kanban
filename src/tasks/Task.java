@@ -1,6 +1,4 @@
-package ru.javacource.schedule.tasks;
-
-import ru.javacource.schedule.manager.Managers;
+package tasks;
 
 import java.util.Objects;
 

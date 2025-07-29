@@ -1,6 +1,6 @@
-package ru.javacource.schedule.manager;
+package manager;
 
-import ru.javacource.schedule.tasks.Task;
+import tasks.Task;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,4 +25,5 @@ public class InMemoryHistoryManager implements HistoryManager{
             history.remove(0);
         }
     }
+
 }

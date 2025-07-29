@@ -1,9 +1,10 @@
-package ru.javacource.schedule.manager;
+package manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.javacource.schedule.tasks.StatusTask;
-import ru.javacource.schedule.tasks.Task;
+import tasks.Epic;
+import tasks.StatusTask;
+import tasks.Task;
 
 import java.util.List;
 
@@ -36,5 +37,18 @@ class InMemoryHistoryManagerTest {
         task.setStatus(StatusTask.IN_PROGRESS);
         historyManager.addTask(task);
         assertEquals(StatusTask.NEW, historyManager.getHistory().get(0).getStatus(),"Не сохранена предыдущая версия задачи");
+    }
+    @Test
+    public void testDeletedTaskIfSiseMoreTen(){
+
+        for (int i = 0; i < InMemoryHistoryManager.MAX_SIZE + 1; i++) {
+            Task task = new Task("Task " + i, "description", StatusTask.NEW);
+            task.setId(i);
+            historyManager.addTask(task);
+        }
+        List<Task> history = historyManager.getHistory();
+        assertEquals(InMemoryHistoryManager.MAX_SIZE, history.size(),"Размер тасков в истории не соответсвует MAX-возможному значению");
+        assertEquals(1, history.get(0).getId(),"При переполненнии не удалился первый таск");
+
     }
 }

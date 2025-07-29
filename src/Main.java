@@ -1,11 +1,9 @@
-package ru.javacource.schedule;
-
-import ru.javacource.schedule.manager.InMemoryTaskManager;
-import ru.javacource.schedule.manager.TaskManager;
-import ru.javacource.schedule.tasks.Epic;
-import ru.javacource.schedule.tasks.StatusTask;
-import ru.javacource.schedule.tasks.Subtask;
-import ru.javacource.schedule.tasks.Task;
+import manager.InMemoryTaskManager;
+import manager.TaskManager;
+import tasks.Epic;
+import tasks.StatusTask;
+import tasks.Subtask;
+import tasks.Task;
 
 public class Main {
 

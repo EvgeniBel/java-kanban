@@ -1,6 +1,6 @@
-package ru.javacource.schedule.manager;
+package manager;
 
-import ru.javacource.schedule.tasks.Task;
+import tasks.Task;
 import java.util.List;
 
 public interface HistoryManager {

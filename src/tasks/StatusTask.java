@@ -1,4 +1,4 @@
-package ru.javacource.schedule.tasks;
+package tasks;
 
 public enum StatusTask {
     NEW,

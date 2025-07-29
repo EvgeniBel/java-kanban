@@ -1,11 +1,11 @@
-package ru.javacource.schedule.manager;
+package manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.javacource.schedule.tasks.Epic;
-import ru.javacource.schedule.tasks.StatusTask;
-import ru.javacource.schedule.tasks.Subtask;
-import ru.javacource.schedule.tasks.Task;
+import tasks.Epic;
+import tasks.StatusTask;
+import tasks.Subtask;
+import tasks.Task;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,17 +21,38 @@ class InMemoryTaskManagerTest {
     @Test
     public void testAddNewTask() {
         Task task = new Task("task_1", "description", StatusTask.NEW);
-        final int taskId = manager.addNewTask(task);
+        int taskId = manager.addNewTask(task);
         Task savedTask = manager.getTasks(taskId);
 
+        assertTrue(taskId > 0,"Генератор ID не работает");
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task, savedTask, "Задачи не совпадают.");
 
-        final List<Task> tasks = manager.getTasks();
+         List<Task> tasks = manager.getTasks();
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
         assertEquals(task, tasks.get(0), "Задачи не совпадают.");
+    }
+
+    @Test
+    public void  testAddNewEpiEndNewSubtask(){
+        Epic epic = new Epic("epic_1", "description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+        Subtask subtask = new Subtask("Sutask_1", "description", StatusTask.NEW,epicId);
+        int subtaskId = manager.addNewSubtask(subtask);
+        List<Epic> epics = manager.getEpics();
+        List <Subtask> subtasks = manager.getSubtasks();
+
+        assertTrue(epicId > 0,"Генератор ID не работает");
+        assertNotNull(epics, "Эпики не возвращаются.");
+        assertEquals(1, epics.size(), "Неверное количество эпиков.");
+        assertEquals(epic, epics.get(0), "Эпики не совпадают.");
+
+        assertTrue(subtaskId > 0,"Генератор ID не работает");
+        assertNotNull(subtasks, "Эпики не возвращаются.");
+        assertEquals(1, subtasks.size(), "Неверное количество эпиков.");
+        assertEquals(subtask, subtasks.get(0), "Эпики не совпадают.");
     }
 
     @Test
@@ -106,6 +127,5 @@ class InMemoryTaskManagerTest {
         assertEquals(task, manager.getTasks(taskId), "Менеджер должен возвращать добавленную задачу");
         assertEquals(epic, manager.getEpic(epicId), "Менеджер должен возвращать добавленный эпик");
         assertEquals(subtask, manager.getSubtasks(subtaskId), "Менеджер должен возвращать добавленную подзадачу");
-
     }
 }

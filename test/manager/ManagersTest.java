@@ -1,7 +1,6 @@
-package ru.javacource.schedule.manager;
+package manager;
 
 import org.junit.jupiter.api.Test;
-import ru.javacource.schedule.tasks.Task;
 
 import static org.junit.jupiter.api.Assertions.*;
 

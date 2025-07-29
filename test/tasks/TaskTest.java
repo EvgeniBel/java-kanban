@@ -1,4 +1,4 @@
-package ru.javacource.schedule.tasks;
+package tasks;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,8 +20,8 @@ class TaskTest {
         task.setName("Task_ONE");
         task.setDescription("Task_ONE description");
         task.setStatus(StatusTask.IN_PROGRESS);
-        assertEquals(15,task.getId());
-        assertEquals("Task_ONE",task.getName());
+        assertEquals(15,task.getId(),"ID не изменился");
+        assertEquals("Task_ONE",task.getName(),"имя таска не изменилось");
         assertEquals("Task_ONE description",task.getDescription());
         assertEquals(StatusTask.IN_PROGRESS,task.getStatus());
     }

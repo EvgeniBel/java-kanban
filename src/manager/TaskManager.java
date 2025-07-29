@@ -1,8 +1,8 @@
-package ru.javacource.schedule.manager;
+package manager;
 
-import ru.javacource.schedule.tasks.Epic;
-import ru.javacource.schedule.tasks.Subtask;
-import ru.javacource.schedule.tasks.Task;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +54,4 @@ public interface TaskManager  {
     void updateEpicStatus(int epicId);
 
     List<Task> getHistory();
-
-
-
 }

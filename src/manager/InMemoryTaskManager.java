@@ -1,10 +1,9 @@
-package ru.javacource.schedule.manager;
+package manager;
 
-import ru.javacource.schedule.tasks.Epic;
-import ru.javacource.schedule.tasks.StatusTask;
-import ru.javacource.schedule.tasks.Subtask;
-import ru.javacource.schedule.tasks.Task;
-
+import tasks.Epic;
+import tasks.StatusTask;
+import tasks.Subtask;
+import tasks.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
