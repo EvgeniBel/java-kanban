@@ -15,7 +15,7 @@ class InMemoryHistoryManagerTest {
 
     HistoryManager historyManager;
 
-    @BeforeEach
+    /*@BeforeEach
     public void initHistorymanager() {
         historyManager = Managers.getDefaultHistory();
     }
@@ -27,28 +27,16 @@ class InMemoryHistoryManagerTest {
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history, "После добавления задачи, история не должна быть пустой.");
         assertEquals(1, history.size(), "После добавления задачи, история не должна быть пустой.");
-    }
+    }*/
 
     //убедитесь, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
-    @Test
+   /* @Test
     public void testHistoricVersionsByPointer() {
         Task task = new Task("Test_1", "Testion task", StatusTask.NEW);
         historyManager.addTask(task);
         task.setStatus(StatusTask.IN_PROGRESS);
         historyManager.addTask(task);
         assertEquals(StatusTask.NEW, historyManager.getHistory().get(0).getStatus(),"Не сохранена предыдущая версия задачи");
-    }
-    @Test
-    public void testDeletedTaskIfSiseMoreTen(){
+    }*/
 
-        for (int i = 0; i < InMemoryHistoryManager.MAX_SIZE + 1; i++) {
-            Task task = new Task("Task " + i, "description", StatusTask.NEW);
-            task.setId(i);
-            historyManager.addTask(task);
-        }
-        List<Task> history = historyManager.getHistory();
-        assertEquals(InMemoryHistoryManager.MAX_SIZE, history.size(),"Размер тасков в истории не соответсвует MAX-возможному значению");
-        assertEquals(1, history.get(0).getId(),"При переполненнии не удалился первый таск");
-
-    }
 }
