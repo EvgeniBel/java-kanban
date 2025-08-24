@@ -50,13 +50,14 @@ class InMemoryTaskManagerTest {
         int subtaskId = manager.addNewSubtask(subtask);
         List<Epic> epics = manager.getEpics();
         List<Subtask> subtasks = manager.getSubtasks();
+        String messageErrorGenId = "Генератор ID не работает";
 
-        assertTrue(epicId > 0, "Генератор ID не работает");
+        assertTrue(epicId > 0, messageErrorGenId);
         assertNotNull(epics, "Эпики не возвращаются.");
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
         assertEquals(epic, epics.get(0), "Эпики не совпадают.");
 
-        assertTrue(subtaskId > 0, "Генератор ID не работает");
+        assertTrue(subtaskId > 0, messageErrorGenId);
         assertNotNull(subtasks, "Эпики не возвращаются.");
         assertEquals(1, subtasks.size(), "Неверное количество эпиков.");
         assertEquals(subtask, subtasks.get(0), "Эпики не совпадают.");
