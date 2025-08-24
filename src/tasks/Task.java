@@ -12,7 +12,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
-        }
+    }
 
     public Task(int id, String name, String description, StatusTask status) {
         this.id = id;
@@ -21,8 +21,9 @@ public class Task {
         this.status = status;
     }
 
-    public Task(Task task){
-        this.id = task.id;;
+    public Task(Task task) {
+        this.id = task.id;
+        ;
         this.name = task.name;
         this.status = task.status;
         this.description = task.description;
@@ -55,11 +56,12 @@ public class Task {
     public void setStatus(StatusTask status) {
         this.status = status;
     }
-    public StatusTask getStatus(){
+
+    public StatusTask getStatus() {
         return this.status;
     }
 
-    public Task copy(){
+    public Task copy() {
         return new Task(this.id, this.name, this.description, this.status);
     }
 
