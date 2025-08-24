@@ -58,9 +58,9 @@ class InMemoryTaskManagerTest {
         assertEquals(epic, epics.get(0), "Эпики не совпадают.");
 
         assertTrue(subtaskId > 0, messageErrorGenId);
-        assertNotNull(subtasks, "Эпики не возвращаются.");
-        assertEquals(1, subtasks.size(), "Неверное количество эпиков.");
-        assertEquals(subtask, subtasks.get(0), "Эпики не совпадают.");
+        assertNotNull(subtasks, "Сабтаски не возвращаются.");
+        assertEquals(1, subtasks.size(), "Неверное количество Сабтасков.");
+        assertEquals(subtask, subtasks.get(0), "Сабтаски не совпадают.");
     }
 
     @Test
