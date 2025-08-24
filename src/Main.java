@@ -70,7 +70,7 @@ public class Main {
     private static void printHistory(TaskManager manager) {
         System.out.println("История запросов");
         for (Task task : manager.getHistory()) {
-            System.out.println( "Название: "+task.getName()+", ID: " + task.getId());
+            System.out.println("Название: " + task.getName() + ", ID: " + task.getId());
         }
     }
 }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.StatusTask;
 import tasks.Task;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,63 +51,63 @@ class InMemoryHistoryManagerTest {
         manager.getTasks(task1Id);
 
         List<Task> tasks = manager.getHistory();
-        assertEquals(2, tasks.size(),"После повторного просмотра дубликат должен удалиться");
-        assertEquals(task2, tasks.get(0),"Должен сохраниться порядок просмотра");
-        assertEquals(task1, tasks.get(1),"Должен сохраниться порядок просмотра");
+        assertEquals(2, tasks.size(), "После повторного просмотра дубликат должен удалиться");
+        assertEquals(task2, tasks.get(0), "Должен сохраниться порядок просмотра");
+        assertEquals(task1, tasks.get(1), "Должен сохраниться порядок просмотра");
     }
 
     @Test
-    public void testDeleteTaskInBegin(){
+    public void testDeleteTaskInBegin() {
         int task1Id = manager.addNewTask(task1);
         int task2Id = manager.addNewTask(task2);
         int task3Id = manager.addNewTask(task3);
         manager.getTasks(task1Id);
         manager.getTasks(task2Id);
         manager.getTasks(task3Id);
-        assertEquals(3, manager.getHistory().size(),"Размер истории не соответствует кол-ву просмотров");
+        assertEquals(3, manager.getHistory().size(), "Размер истории не соответствует кол-ву просмотров");
         manager.deleteTask(task1Id);
-        assertEquals(2, manager.getHistory().size(),"После удаления задачи -  в  истории тоже исчезает");
-        assertEquals(task2, manager.getHistory().get(0),"Должен сохраниться порядок просмотра после удаления");
-        assertEquals(task3, manager.getHistory().get(1),"Должен сохраниться порядок просмотра после удаления");
+        assertEquals(2, manager.getHistory().size(), "После удаления задачи -  в  истории тоже исчезает");
+        assertEquals(task2, manager.getHistory().get(0), "Должен сохраниться порядок просмотра после удаления");
+        assertEquals(task3, manager.getHistory().get(1), "Должен сохраниться порядок просмотра после удаления");
     }
 
     @Test
-    public void testRemoveTaskInMiddle(){
+    public void testRemoveTaskInMiddle() {
         int task1Id = manager.addNewTask(task1);
         int task2Id = manager.addNewTask(task2);
         int task3Id = manager.addNewTask(task3);
         manager.getTasks(task1Id);
         manager.getTasks(task2Id);
         manager.getTasks(task3Id);
-        assertEquals(3, manager.getHistory().size(),"Размер истории не соответствует кол-ву просмотров");
+        assertEquals(3, manager.getHistory().size(), "Размер истории не соответствует кол-ву просмотров");
         manager.deleteTask(task2Id);
-        assertEquals(2, manager.getHistory().size(),"После удаления задачи -  в  истории тоже исчезает");
-        assertEquals(task1, manager.getHistory().get(0),"Должен сохраниться порядок просмотра после удаления");
-        assertEquals(task3, manager.getHistory().get(1),"Должен сохраниться порядок просмотра после удаления");
+        assertEquals(2, manager.getHistory().size(), "После удаления задачи -  в  истории тоже исчезает");
+        assertEquals(task1, manager.getHistory().get(0), "Должен сохраниться порядок просмотра после удаления");
+        assertEquals(task3, manager.getHistory().get(1), "Должен сохраниться порядок просмотра после удаления");
     }
 
     @Test
-    public void testRemoveTaskInFinish(){
+    public void testRemoveTaskInFinish() {
         int task1Id = manager.addNewTask(task1);
         int task2Id = manager.addNewTask(task2);
         int task3Id = manager.addNewTask(task3);
         manager.getTasks(task1Id);
         manager.getTasks(task2Id);
         manager.getTasks(task3Id);
-        assertEquals(3, manager.getHistory().size(),"Размер истории не соответствует кол-ву просмотров");
+        assertEquals(3, manager.getHistory().size(), "Размер истории не соответствует кол-ву просмотров");
         manager.deleteTask(task3Id);
-        assertEquals(2, manager.getHistory().size(),"После удаления задачи -  в  истории тоже исчезает");
-        assertEquals(task1, manager.getHistory().get(0),"Должен сохраниться порядок просмотра после удаления");
-        assertEquals(task2, manager.getHistory().get(1),"Должен сохраниться порядок просмотра после удаления");
+        assertEquals(2, manager.getHistory().size(), "После удаления задачи -  в  истории тоже исчезает");
+        assertEquals(task1, manager.getHistory().get(0), "Должен сохраниться порядок просмотра после удаления");
+        assertEquals(task2, manager.getHistory().get(1), "Должен сохраниться порядок просмотра после удаления");
     }
 
     @Test
-    public void testIsEmptyHistory(){
+    public void testIsEmptyHistory() {
         int task1Id = manager.addNewTask(task1);
         int task2Id = manager.addNewTask(task2);
         int task3Id = manager.addNewTask(task3);
 
-        assertEquals(0,manager.getHistory().size());
+        assertEquals(0, manager.getHistory().size());
         assertTrue(manager.getHistory().isEmpty());
     }
 }
