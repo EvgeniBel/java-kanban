@@ -48,6 +48,7 @@ public class Main {
 
         System.out.println("\nУдаляем задачу Эпик_1");
         manager.deleteEpic(epicId1);
+
         printHistory(manager);
 
 
