@@ -126,9 +126,10 @@ class InMemoryTaskManagerTest {
         assertEquals(1, manager.getEpics().size(), "Должен быть 1 epic");
         assertEquals(1, manager.getSubtasks().size(), "Должен быть 1 subtask");
 
-        assertEquals(taskId, manager.getTasks(taskId).getId(), "ID должны совпадать");
-        assertEquals(epicId, manager.getEpic(epicId).getId(), "ID должны совпадать");
-        assertEquals(subtaskId, manager.getSubtasks(subtaskId).getId(), "ID должны совпадать");
+        String massageIdMatch = "ID должны совпадать";
+        assertEquals(taskId, manager.getTasks(taskId).getId(), massageIdMatch);
+        assertEquals(epicId, manager.getEpic(epicId).getId(), massageIdMatch);
+        assertEquals(subtaskId, manager.getSubtasks(subtaskId).getId(), massageIdMatch);
 
         assertEquals(task, manager.getTasks(taskId), "Менеджер должен возвращать добавленную задачу");
         assertEquals(epic, manager.getEpic(epicId), "Менеджер должен возвращать добавленный эпик");
