@@ -18,7 +18,7 @@ public class Subtask extends Task {
     }
 
     @Override
-    public Subtask copy(){
+    public Subtask copy() {
         return new Subtask(this.id, this.name, this.description, this.status, this.epicId);
     }
 

@@ -3,24 +3,26 @@ package tasks;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    ArrayList<Integer> subtaskId= new ArrayList<>();
+    ArrayList<Integer> subtaskId = new ArrayList<>();
 
-    public Epic(String name, String description, StatusTask status){
+    public Epic(String name, String description, StatusTask status) {
         super(name, description, status);
     }
-    public Epic(int id, String name, String description, StatusTask status){
+
+    public Epic(int id, String name, String description, StatusTask status) {
         super(id, name, description, status);
     }
 
-    public void addSubtaskId(int id){
+    public void addSubtaskId(int id) {
         subtaskId.add(id);
     }
-    public ArrayList<Integer> getSubtaskId(){
+
+    public ArrayList<Integer> getSubtaskId() {
         return subtaskId;
     }
 
     @Override
-    public Epic copy(){
+    public Epic copy() {
         Epic copy = new Epic(this.id, this.name, this.description, this.status);
         copy.subtaskId = new ArrayList<>(this.subtaskId);
         return copy;
