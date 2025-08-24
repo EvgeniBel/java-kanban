@@ -11,16 +11,14 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     static int countId = 0;
-    private HashMap<Integer, Task> listTask = new HashMap<>();
-    private HashMap<Integer, Epic> listEpic = new HashMap<>();
-    private HashMap<Integer, Subtask> listSubtask = new HashMap<>();
+    private final HashMap<Integer, Task> listTask = new HashMap<>();
+    private final HashMap<Integer, Epic> listEpic = new HashMap<>();
+    private final HashMap<Integer, Subtask> listSubtask = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
-
 
     //Получение списка
     @Override
     public ArrayList<Task> getTasks() {
-
         return new ArrayList<>(listTask.values());
     }
 

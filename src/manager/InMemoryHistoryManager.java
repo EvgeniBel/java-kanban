@@ -29,7 +29,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node first;
     private Node last;
 
-
     @Override
     public List<Task> getHistory() {
         return getTasks();

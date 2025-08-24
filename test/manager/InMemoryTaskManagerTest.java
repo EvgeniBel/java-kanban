@@ -154,6 +154,7 @@ class InMemoryTaskManagerTest {
 
         manager.getSubtasks(subtaskId1);
         manager.getSubtasks(subtaskId2);
+        assertNotEquals(0,manager.getSubtasks().size(), "Сабтаски не добавлены в историю");
 
         manager.deleteAllSubtasks();
         assertTrue(manager.getSubtasks().isEmpty(), "Сабтаски не удалены");
@@ -172,6 +173,9 @@ class InMemoryTaskManagerTest {
 
         manager.getSubtasks(subtaskId1);
         manager.getSubtasks(subtaskId2);
+        manager.getEpic(epicId);
+        assertNotEquals(0,manager.getSubtasks().size(), "История не должна быть пустой");
+
         manager.deleteAllEpics();
 
         assertEquals(0, manager.getSubtasks().size(), "Сабтаски не удалены");

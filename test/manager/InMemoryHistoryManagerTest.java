@@ -4,9 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.StatusTask;
 import tasks.Task;
-
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +20,6 @@ class InMemoryHistoryManagerTest {
         task1 = new Task("Task_1", "Task_1 description", StatusTask.NEW);
         task2 = new Task("Task_2", "Task_2 description", StatusTask.NEW);
         task3 = new Task("Task_3", "Task_3 description", StatusTask.NEW);
-
     }
 
     @Test
@@ -57,7 +54,6 @@ class InMemoryHistoryManagerTest {
         assertEquals(task2, tasks.get(0),"Должен сохраниться порядок просмотра");
         assertEquals(task1, tasks.get(1),"Должен сохраниться порядок просмотра");
     }
-
 
     @Test
     public void testDeleteTaskInBegin(){
