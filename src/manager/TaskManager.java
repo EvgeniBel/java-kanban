@@ -7,7 +7,7 @@ import tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface TaskManager  {
+public interface TaskManager {
     //Получение списка
     ArrayList<Task> getTasks();
 
