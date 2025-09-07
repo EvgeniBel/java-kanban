@@ -1,6 +1,9 @@
 package manager;
 
-import tasks.*;
+import tasks.Epic;
+import tasks.StatusTask;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +52,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке файла", e);
         }
+
         return taskManager;
     }
 
@@ -128,20 +132,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public void save() {
-        try{
+        try {
             file.getParentFile().mkdirs();
             StringBuilder content = new StringBuilder(header);
-            for(Task task : getTasks()){
+            for (Task task : getTasks()) {
                 content.append(taskToString(task));
             }
-            for (Epic epic : getEpics()){
+            for (Epic epic : getEpics()) {
                 content.append(taskToString(epic));
             }
-            for (Subtask subtask : getSubtasks()){
+            for (Subtask subtask : getSubtasks()) {
                 content.append(taskToString(subtask));
             }
             content.append("\n");
-            Files.writeString(file.toPath(),content.toString());
+            Files.writeString(file.toPath(), content.toString());
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения файла", e);
         }
@@ -149,20 +153,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public String toString() {
-        return "FileBackedTaskManager{"+
-    "file="+ file.getAbsolutePath()+
-                ", task="+getTasks().size()+
-                ", epic="+getEpics().size()+
-                ", subtask="+getSubtasks().size()+"}";
+        return "FileBackedTaskManager{" +
+                "file=" + file.getAbsolutePath() +
+                ", task=" + getTasks().size() +
+                ", epic=" + getEpics().size() +
+                ", subtask=" + getSubtasks().size() + "}";
     }
 
-
-    public static void main (String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         File file = new File("resources/task.csv");
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
-        System.out.println(Files.readString(file.toPath()));
 
-       /* Task task1 = new Task("Task_1", "Task_1 description", StatusTask.NEW);
+        Task task1 = new Task("Task_1", "Task_1 description", StatusTask.NEW);
         int taskId1 = manager.addNewTask(task1);
         Task task2 = new Task("Task_2", "Task_2 description", StatusTask.NEW);
         int taskId2 = manager.addNewTask(task2);
@@ -178,8 +180,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         int subtaskId1 = manager.addNewSubtask(subtask1);
         int subtaskId2 = manager.addNewSubtask(subtask2);
         int subtaskId3 = manager.addNewSubtask(subtask3);
-*/
+
         FileBackedTaskManager loaderManeger = loadFromFile(file);
-        System.out.println("Загружаем из файла " +loaderManeger);
+        System.out.println("Загружаем из файла " + loaderManeger);
     }
 }
