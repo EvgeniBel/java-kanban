@@ -22,8 +22,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
         try {
-            String content = Files.readString(file.toPath());
-            String[] lines = content.split("\n");
+            String textFromFile = Files.readString(file.toPath());
+            String[] lines = textFromFile.split("\n");
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i].trim();
                 if (line.isEmpty()) {
@@ -134,18 +134,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void save() {
         try {
             file.getParentFile().mkdirs();
-            StringBuilder content = new StringBuilder(header);
+            StringBuilder fileContents = new StringBuilder(header);
             for (Task task : getTasks()) {
-                content.append(taskToString(task));
+                fileContents.append(taskToString(task));
             }
             for (Epic epic : getEpics()) {
-                content.append(taskToString(epic));
+                fileContents.append(taskToString(epic));
             }
             for (Subtask subtask : getSubtasks()) {
-                content.append(taskToString(subtask));
+                fileContents.append(taskToString(subtask));
             }
-            content.append("\n");
-            Files.writeString(file.toPath(), content.toString());
+            fileContents.append("\n");
+            Files.writeString(file.toPath(), fileContents.toString());
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения файла", e);
         }
@@ -181,7 +181,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         int subtaskId2 = manager.addNewSubtask(subtask2);
         int subtaskId3 = manager.addNewSubtask(subtask3);
 
-        FileBackedTaskManager loaderManeger = loadFromFile(file);
-        System.out.println("Загружаем из файла " + loaderManeger);
+        FileBackedTaskManager loaderManager = loadFromFile(file);
+        System.out.println("Загружаем из файла " + loaderManager);
     }
 }
