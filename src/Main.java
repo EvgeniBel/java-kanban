@@ -1,15 +1,24 @@
-import manager.InMemoryTaskManager;
 import manager.TaskManager;
-import tasks.Epic;
 import tasks.StatusTask;
-import tasks.Subtask;
 import tasks.Task;
+
+import java.io.File;
+
+import static manager.FileBackedTaskManager.loadFromFile;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager manager = new InMemoryTaskManager();
-        Task task1 = new Task("Task_1", "Task_1 description", StatusTask.NEW);
+
+        File file = new File("resources/task.csv");
+        TaskManager manager;
+        manager = loadFromFile(file);
+        Task task = new Task("NewTask", "New description", StatusTask.NEW);
+        int taskId1 = manager.addNewTask(task);
+
+        printAllTasks(manager);
+
+         /*Task task1 = new Task("Task_1", "Task_1 description", StatusTask.NEW);
         int taskId1 = manager.addNewTask(task1);
         Task task2 = new Task("Task_2", "Task_2 description", StatusTask.NEW);
         int taskId2 = manager.addNewTask(task2);
@@ -46,9 +55,9 @@ public class Main {
         printHistory(manager);
 
         System.out.println("\nУдаляем задачу Эпик_1");
-        manager.deleteEpic(epicId1);
+        manager.deleteEpic(epicId1);*/
 
-        printHistory(manager);
+        //printHistory(manager);
     }
 
     private static void printAllTasks(TaskManager manager) {

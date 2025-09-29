@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    static int countId = 0;
-    private final HashMap<Integer, Task> listTask = new HashMap<>();
-    private final HashMap<Integer, Epic> listEpic = new HashMap<>();
-    private final HashMap<Integer, Subtask> listSubtask = new HashMap<>();
+    protected int countId = 0;
+    protected final HashMap<Integer, Task> listTask = new HashMap<>();
+    protected final HashMap<Integer, Epic> listEpic = new HashMap<>();
+    protected final HashMap<Integer, Subtask> listSubtask = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     //Получение списка
@@ -204,7 +204,25 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    private static int generateId() {
+    private int generateId() {
+        updateIdFromLoadId();
         return ++countId;
+    }
+
+    protected void updateIdFromLoadId() {
+        int maxId = 0;
+        for (Integer value : listTask.keySet()) {
+            if (maxId < value)
+                maxId = value;
+        }
+        for (Integer value : listEpic.keySet()) {
+            if (maxId < value)
+                maxId = value;
+        }
+        for (Integer value : listSubtask.keySet()) {
+            if (maxId < value)
+                maxId = value;
+        }
+        countId = maxId;
     }
 }
