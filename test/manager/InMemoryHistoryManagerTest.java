@@ -32,6 +32,14 @@ class InMemoryHistoryManagerTest {
         assertEquals(1, manager.getHistory().size(), "После добавления задачи, после просмотра - история не должна быть пустой.");
     }
 
+    @Test
+    void getHistoryEmptyHistoryReturnEmptyList() { //Пустая история задач
+        List<Task> history = manager.getHistory();
+
+        assertNotNull(history, "История не должна быть null");
+        assertTrue(history.isEmpty(), "История должна быть пустой");
+    }
+
 
     @Test
     public void testHistoricVersionsByPointer() {
@@ -102,12 +110,127 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void testIsEmptyHistory() {
+    void addTask_DuplicateTasks_ShouldMoveToEnd() {  //Дублирование
+
+        int task1Id = manager.addNewTask(task1);
+        int task2Id = manager.addNewTask(task2);
+
+        manager.getTasks(task1Id);
+        manager.getTasks(task2Id);
+        manager.getTasks(task1Id);
+
+        List<Task> history = manager.getHistory();
+
+        assertEquals(2, history.size(), "История должна содержать 2 уникальные задачи");
+        assertEquals(task2, history.get(0), "Первая задача должна остаться на месте");
+        assertEquals(task1, history.get(1), "Дубликат должен переместиться в конец");
+    }
+
+    @Test
+    void remove_FromBeginning_ShouldUpdateHistoryCorrectly() {//Удаление из истории: начало
         int task1Id = manager.addNewTask(task1);
         int task2Id = manager.addNewTask(task2);
         int task3Id = manager.addNewTask(task3);
 
-        assertEquals(0, manager.getHistory().size());
-        assertTrue(manager.getHistory().isEmpty());
+        manager.getTasks(task1Id);
+        manager.getTasks(task2Id);
+        manager.getTasks(task3Id);
+
+        manager.deleteTask(task1Id);
+
+        List<Task> history = manager.getHistory();
+        assertEquals(2, history.size(), "История должна содержать 2 задачи после удаления");
+        assertEquals(task2, history.get(0), "Первой должна стать вторая задача");
+        assertEquals(task3, history.get(1), "Второй должна остаться третья задача");
     }
+
+    @Test
+    void remove_FromMiddle_ShouldUpdateHistoryCorrectly() {  //Удаление из истории: середина
+
+        int task1Id = manager.addNewTask(task1);
+        int task2Id = manager.addNewTask(task2);
+        int task3Id = manager.addNewTask(task3);
+
+        manager.getTasks(task1Id);
+        manager.getTasks(task2Id);
+        manager.getTasks(task3Id);
+
+        manager.deleteTask(task2Id);
+
+        List<Task> history = manager.getHistory();
+        assertEquals(2, history.size(), "История должна содержать 2 задачи после удаления");
+        assertEquals(task1, history.get(0), "Первая задача должна остаться на месте");
+        assertEquals(task3, history.get(1), "Третья задача должна стать второй");
+    }
+
+    @Test
+    void remove_FromEnd_ShouldUpdateHistoryCorrectly() {//Удаление из истории: конец
+
+        int task1Id = manager.addNewTask(task1);
+        int task2Id = manager.addNewTask(task2);
+        int task3Id = manager.addNewTask(task3);
+
+        manager.getTasks(task1Id);
+        manager.getTasks(task2Id);
+        manager.getTasks(task3Id);
+
+        manager.deleteTask(task3Id);
+
+        List<Task> history = manager.getHistory();
+        assertEquals(2, history.size(), "История должна содержать 2 задачи после удаления");
+        assertEquals(task1, history.get(0), "Первая задача должна остаться на месте");
+        assertEquals(task2, history.get(1), "Вторая задача должна остаться на месте");
+    }
+
+    @Test
+    void remove_NonExistentTask_ShouldNotChangeHistory() {
+        int task1Id = manager.addNewTask(task1);
+        int task2Id = manager.addNewTask(task2);
+
+        manager.getTasks(task1Id);
+        manager.getTasks(task2Id);
+
+        manager.deleteTask(999);
+        List<Task> history = manager.getHistory();
+        assertEquals(2, history.size(), "История не должна измениться при удалении несуществующей задачи");
+    }
+
+    @Test
+    void historyOrder_ShouldPreserveInsertionOrder() {
+        int task1Id = manager.addNewTask(task1);
+        int task2Id = manager.addNewTask(task2);
+        int task3Id = manager.addNewTask(task3);
+
+        manager.getTasks(task1Id);
+        manager.getTasks(task2Id);
+        manager.getTasks(task3Id);
+
+        List<Task> history = manager.getHistory();
+
+        assertEquals(3, history.size(), "История должна содержать 3 задачи");
+        assertEquals(task1, history.get(0), "Первая задача должна быть task1");
+        assertEquals(task2, history.get(1), "Вторая задача должна быть task2");
+        assertEquals(task3, history.get(2), "Третья задача должна быть task3");
+    }
+
+    @Test
+    void multipleDuplicates_ShouldKeepOnlyLastOccurrence() {
+        int task1Id = manager.addNewTask(task1);
+        int task2Id = manager.addNewTask(task2);
+        int task3Id = manager.addNewTask(task3);
+
+        manager.getTasks(task1Id);
+        manager.getTasks(task2Id);
+        manager.getTasks(task1Id); // Первый дубликат
+        manager.getTasks(task3Id);
+        manager.getTasks(task1Id); // Второй дубликат
+
+        List<Task> history = manager.getHistory();
+
+        assertEquals(3, history.size(), "История должна содержать 3 уникальные задачи");
+        assertEquals(task2, history.get(0), "Первая задача должна быть task2");
+        assertEquals(task3, history.get(1), "Вторая задача должна быть task3");
+        assertEquals(task1, history.get(2), "Последняя задача должна быть task1 (последний дубликат)");
+    }
+
 }

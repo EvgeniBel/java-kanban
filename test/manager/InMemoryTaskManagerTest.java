@@ -185,4 +185,247 @@ class InMemoryTaskManagerTest {
         assertEquals(0, manager.getEpics().size(), "Эпики не удалены");
         assertTrue(manager.getEpics().isEmpty(), "Эпики не удалены");
     }
+
+    @Test
+    void testGetTasksWithInvalidIdReturnNull() {
+        assertNull(manager.getTasks(999), "Несуществующий ID должен возвращать null");
+    }
+
+    @Test
+    void testGetEpicWithInvalidIdReturnNull() {
+        assertNull(manager.getEpic(999), "Несуществующий ID эпика должен возвращать null");
+    }
+
+
+    @Test
+    void testGetSubtasksWithInvalidIdReturnNull() {
+        assertNull(manager.getSubtasks(999), "Несуществующий ID эпика должен возвращать null");
+    }
+
+    @Test
+    void testDeleteNonExistentTaskNotRaiseException() {
+        assertDoesNotThrow(() -> manager.deleteTask(999),
+                "Удаление несуществующей задачи не должно вызывать исключение");
+    }
+
+    @Test
+    void testDeleteNonExistentEpicNotRaiseException() {
+        assertDoesNotThrow(() -> manager.deleteEpic(999),
+                "Удаление несуществующего эпика не должно вызывать исключение");
+    }
+
+    @Test
+    void testDeleteNonExistentSubtaskNotRaiseException() {
+        assertDoesNotThrow(() -> manager.deleteSubtask(999),
+                "Удаление несуществующего Subtask не должно вызывать исключение");
+    }
+
+    @Test
+    void testUpdateNonExistentTaskNotRaiseException() {
+        Task nonExistentTask = new Task(999, "Non-existent", "Description", StatusTask.NEW);
+        assertDoesNotThrow(() -> manager.updateTask(nonExistentTask),
+                "Обновление несуществующей задачи не должно вызывать исключение");
+
+    }
+    @Test
+    void testUpdateNonExistentEpicNotRaiseException() {
+        Epic nonExistentTask = new Epic(999, "Non-existent", "Description", StatusTask.NEW);
+        assertDoesNotThrow(() -> manager.updateEpic(nonExistentTask),
+                "Обновление несуществующего Epic не должно вызывать исключение");
+
+    }
+
+    @Test
+    void testUpdateNonExistentSubtaskNotRaiseException() {
+        Subtask nonExistentTask = new Subtask(999, "Non-existent", "Description", StatusTask.NEW,1);
+        assertDoesNotThrow(() -> manager.updateSubtask(nonExistentTask),
+                "Обновление несуществующего Subtask не должно вызывать исключение");
+
+    }
+
+    @Test
+    void epicStatus_AllSubtasksNewReturnNewForEpic() { //Все подзадачи со статусом NEW
+        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "Description 1", StatusTask.NEW, epicId);
+        Subtask subtask2 = new Subtask("Subtask 2", "Description 2", StatusTask.NEW, epicId);
+        Subtask subtask3 = new Subtask("Subtask 3", "Description 3", StatusTask.NEW, epicId);
+
+        manager.addNewSubtask(subtask1);
+        manager.addNewSubtask(subtask2);
+        manager.addNewSubtask(subtask3);
+
+        assertEquals(StatusTask.NEW, manager.getEpic(epicId).getStatus(),
+                "Статус эпика должен быть NEW, когда все подзадачи NEW");
+    }
+
+    @Test
+    void epicStatus_AllSubtasksDoneReturnDoneForEpic() { //Все подзадачи со статусом DONE
+        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "Description 1", StatusTask.DONE, epicId);
+        Subtask subtask2 = new Subtask("Subtask 2", "Description 2", StatusTask.DONE, epicId);
+        Subtask subtask3 = new Subtask("Subtask 3", "Description 3", StatusTask.DONE, epicId);
+
+        manager.addNewSubtask(subtask1);
+        manager.addNewSubtask(subtask2);
+        manager.addNewSubtask(subtask3);
+
+        assertEquals(StatusTask.DONE, manager.getEpic(epicId).getStatus(),
+                "Статус эпика должен быть DONE, когда все подзадачи DONE");
+    }
+
+    @Test
+    void epicStatus_SubtasksNewAndDoneReturnInProgressForEpic() { //Подзадачи со статусами NEW и DONE
+        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "Description 1", StatusTask.NEW, epicId);
+        Subtask subtask2 = new Subtask("Subtask 2", "Description 2", StatusTask.DONE, epicId);
+        Subtask subtask3 = new Subtask("Subtask 3", "Description 3", StatusTask.NEW, epicId);
+
+        manager.addNewSubtask(subtask1);
+        manager.addNewSubtask(subtask2);
+        manager.addNewSubtask(subtask3);
+
+        assertEquals(StatusTask.IN_PROGRESS, manager.getEpic(epicId).getStatus(),
+                "Статус эпика должен быть IN_PROGRESS, когда есть подзадачи NEW и DONE");
+    }
+
+    @Test
+    void epicStatus_AllSubtasksInProgressReturnInProgressForEpic() { //Подзадачи со статусом IN_PROGRESS
+        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "Description 1", StatusTask.IN_PROGRESS, epicId);
+        Subtask subtask2 = new Subtask("Subtask 2", "Description 2", StatusTask.IN_PROGRESS, epicId);
+        Subtask subtask3 = new Subtask("Subtask 3", "Description 3", StatusTask.IN_PROGRESS, epicId);
+
+        manager.addNewSubtask(subtask1);
+        manager.addNewSubtask(subtask2);
+        manager.addNewSubtask(subtask3);
+
+        assertEquals(StatusTask.IN_PROGRESS, manager.getEpic(epicId).getStatus(),
+                "Статус эпика должен быть IN_PROGRESS, когда все подзадачи IN_PROGRESS");
+    }
+
+    @Test
+    void epicStatus_MixedStatusSubtaskReturnInProgressForEpic() {
+        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "Description 1", StatusTask.NEW, epicId);
+        Subtask subtask2 = new Subtask("Subtask 2", "Description 2", StatusTask.IN_PROGRESS, epicId);
+        Subtask subtask3 = new Subtask("Subtask 3", "Description 3", StatusTask.DONE, epicId);
+
+        manager.addNewSubtask(subtask1);
+        manager.addNewSubtask(subtask2);
+        manager.addNewSubtask(subtask3);
+
+        assertEquals(StatusTask.IN_PROGRESS, manager.getEpic(epicId).getStatus(),
+                "Статус эпика должен быть IN_PROGRESS при смешанных статусах включая IN_PROGRESS");
+    }
+
+    @Test
+    void epicStatus_SingleSubtaskInProgressReturnInProgressForEpic() {
+        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        Subtask subtask = new Subtask("Subtask", "Description", StatusTask.IN_PROGRESS, epicId);
+        manager.addNewSubtask(subtask);
+
+        assertEquals(StatusTask.IN_PROGRESS, manager.getEpic(epicId).getStatus(),
+                "Статус эпика должен быть IN_PROGRESS при одной подзадаче IN_PROGRESS");
+    }
+
+    @Test
+    void epicStatus_NoSubtasks_ReturnNewForEpic() {
+        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        assertEquals(StatusTask.NEW, manager.getEpic(epicId).getStatus(),
+                "Статус эпика без подзадач должен быть NEW");
+    }
+
+    @Test
+    void epicStatus_UpdateSubtaskToInProgressUpdateEpicStatus() {
+        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        Subtask subtask = new Subtask("Subtask", "Description", StatusTask.NEW, epicId);
+        int subtaskId = manager.addNewSubtask(subtask);
+
+        // Изначально статус NEW
+        assertEquals(StatusTask.NEW, manager.getEpic(epicId).getStatus());
+
+        // Обновляем подзадачу на IN_PROGRESS
+        Subtask updatedSubtask = new Subtask(subtaskId, "Updated Subtask", "Updated Description",
+                StatusTask.IN_PROGRESS, epicId);
+        manager.updateSubtask(updatedSubtask);
+
+        assertEquals(StatusTask.IN_PROGRESS, manager.getEpic(epicId).getStatus(),
+                "Статус эпика должен пересчитаться на IN_PROGRESS после обновления подзадачи");
+    }
+
+    @Test
+    void subtaskShouldHaveValidEpicId() {
+        Epic epic = new Epic("Test Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        Subtask subtask = new Subtask("Test Subtask", "Description", StatusTask.NEW, epicId);
+        int subtaskId = manager.addNewSubtask(subtask);
+
+        Subtask savedSubtask = manager.getSubtasks(subtaskId);
+        assertNotNull(savedSubtask, "Подзадача должна существовать");
+        assertEquals(epicId, savedSubtask.getEpicId(), "Подзадача должна быть связана с правильным эпиком");
+    }
+
+    @Test
+    void epicShouldContainSubtasksIds() {
+        Epic epic = new Epic("Test Epic", "Description", StatusTask.NEW);
+        int epicId = manager.addNewEpic(epic);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "Description 1", StatusTask.NEW, epicId);
+        Subtask subtask2 = new Subtask("Subtask 2", "Description 2", StatusTask.NEW, epicId);
+
+        int subtaskId1 = manager.addNewSubtask(subtask1);
+        int subtaskId2 = manager.addNewSubtask(subtask2);
+
+        Epic savedEpic = manager.getEpic(epicId);
+        assertEquals(2, savedEpic.getSubtaskId().size(), "Эпик должен содержать 2 подзадачи");
+        assertTrue(savedEpic.getSubtaskId().contains(subtaskId1), "Эпик должен содержать ID первой подзадачи");
+        assertTrue(savedEpic.getSubtaskId().contains(subtaskId2), "Эпик должен содержать ID второй подзадачи");
+    }
+
+    @Test
+    void addingSubtaskToNonExistentEpic_ShouldReturnNull() {
+        Subtask subtask = new Subtask("Test Subtask", "Description", StatusTask.NEW, 999); // Несуществующий эпик
+
+        Integer subtaskId = manager.addNewSubtask(subtask);
+
+        assertNull(subtaskId, "Добавление подзадачи к несуществующему эпику должно возвращать null");
+    }
+    @Test
+    void getEpicSubtasks_ShouldReturnOnlySubtasksForSpecificEpic() {
+        Epic epic1 = new Epic("Epic 1", "Description 1", StatusTask.NEW);
+        Epic epic2 = new Epic("Epic 2", "Description 2", StatusTask.NEW);
+
+        int epicId1 = manager.addNewEpic(epic1);
+        int epicId2 = manager.addNewEpic(epic2);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "Description 1", StatusTask.NEW, epicId1);
+        Subtask subtask2 = new Subtask("Subtask 2", "Description 2", StatusTask.NEW, epicId2);
+
+        manager.addNewSubtask(subtask1);
+        manager.addNewSubtask(subtask2);
+
+        // Проверяем, что каждый эпик содержит только свои подзадачи
+        assertEquals(1, manager.getEpicSubtasks(epicId1).size(), "Эпик 1 должен содержать только свои подзадачи");
+        assertEquals(1, manager.getEpicSubtasks(epicId2).size(), "Эпик 2 должен содержать только свои подзадачи");
+
+        assertEquals(subtask1.getEpicId(), epicId1, "Подзадача 1 должна принадлежать эпику 1");
+        assertEquals(subtask2.getEpicId(), epicId2, "Подзадача 2 должна принадлежать эпику 2");
+    }
 }
