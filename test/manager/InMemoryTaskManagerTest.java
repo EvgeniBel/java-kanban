@@ -227,6 +227,7 @@ class InMemoryTaskManagerTest {
                 "Обновление несуществующей задачи не должно вызывать исключение");
 
     }
+
     @Test
     void testUpdateNonExistentEpicNotRaiseException() {
         Epic nonExistentTask = new Epic(999, "Non-existent", "Description", StatusTask.NEW);
@@ -237,7 +238,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void testUpdateNonExistentSubtaskNotRaiseException() {
-        Subtask nonExistentTask = new Subtask(999, "Non-existent", "Description", StatusTask.NEW,1);
+        Subtask nonExistentTask = new Subtask(999, "Non-existent", "Description", StatusTask.NEW, 1);
         assertDoesNotThrow(() -> manager.updateSubtask(nonExistentTask),
                 "Обновление несуществующего Subtask не должно вызывать исключение");
 
@@ -407,6 +408,7 @@ class InMemoryTaskManagerTest {
 
         assertNull(subtaskId, "Добавление подзадачи к несуществующему эпику должно возвращать null");
     }
+
     @Test
     void getEpicSubtasks_ShouldReturnOnlySubtasksForSpecificEpic() {
         Epic epic1 = new Epic("Epic 1", "Description 1", StatusTask.NEW);

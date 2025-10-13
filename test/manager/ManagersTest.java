@@ -20,5 +20,4 @@ class ManagersTest {
         assertNotNull(manager, "Менеджер истории не проинициализирован");
         assertTrue(manager instanceof InMemoryHistoryManager);
     }
-
 }

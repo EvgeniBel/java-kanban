@@ -232,5 +232,4 @@ class InMemoryHistoryManagerTest {
         assertEquals(task3, history.get(1), "Вторая задача должна быть task3");
         assertEquals(task1, history.get(2), "Последняя задача должна быть task1 (последний дубликат)");
     }
-
 }

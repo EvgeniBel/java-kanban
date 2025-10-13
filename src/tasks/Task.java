@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Task implements Comparable<Task>{
+public class Task implements Comparable<Task> {
     protected String name;
     protected String description;
     protected int id;
@@ -136,6 +136,7 @@ public class Task implements Comparable<Task>{
                 ", endTime=" + getEndTime() +
                 '}';
     }
+
     @Override
     public int compareTo(Task other) {
         if (this.startTime == null && other.startTime == null) {

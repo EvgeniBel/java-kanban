@@ -95,5 +95,4 @@ public class InMemoryHistoryManager implements HistoryManager {
         linkLast(task);
         nodeMap.put(id, last);
     }
-
 }

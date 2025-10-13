@@ -33,5 +33,4 @@ class TaskTest {
         Task task2 = new Task(1, "Task_5", "another description", StatusTask.IN_PROGRESS);
         assertEquals(task1, task2, "Экземпляры с одинаковым ID должны быть равны");
     }
-
 }

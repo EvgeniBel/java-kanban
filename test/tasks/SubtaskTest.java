@@ -26,7 +26,5 @@ class SubtaskTest {
         assertEquals("Subtask_ONE", subtask.getName());
         assertEquals("Task_ONE description", subtask.getDescription());
         assertEquals(StatusTask.IN_PROGRESS, subtask.getStatus());
-
     }
-
 }

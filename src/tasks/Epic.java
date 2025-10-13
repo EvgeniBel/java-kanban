@@ -111,7 +111,8 @@ public class Epic extends Task {
         super.setDuration(duration);
         calculateEndTime();
     }
-    public void setSubtaskIds(ArrayList<Integer> subtaskIds){
+
+    public void setSubtaskIds(ArrayList<Integer> subtaskIds) {
         if (subtaskIds != null) {
             this.subtaskId = new ArrayList<>(subtaskIds);
         } else {

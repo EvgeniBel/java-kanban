@@ -77,6 +77,7 @@ class FileBackedTaskManagerTest {
         assertEquals(2, taskId2, "Вторая задача должна иметь Id=2");
         assertEquals(3, taskId3, "Третья задача должна иметь Id=3");
     }
+
     @Test
     void testSaveAndLoadWithTimeFields() {
         // Тест для проверки сохранения и загрузки временных полей
@@ -91,6 +92,7 @@ class FileBackedTaskManagerTest {
         assertEquals(task.getDuration(), loadedTask.getDuration());
         assertEquals(task.getEndTime(), loadedTask.getEndTime());
     }
+
     @Test
     void loadFromNonExistentFile_ShouldCreateEmptyManager() {
         File nonExistentFile = new File("non_existent_file_12345.csv");

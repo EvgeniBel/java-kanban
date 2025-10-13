@@ -7,7 +7,8 @@ import tasks.Task;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TimeOverlapTest {
 
@@ -96,6 +97,7 @@ class TimeOverlapTest {
                     "Задача, полностью содержащая базовую, должна пересекаться");
         }
     }
+
     @Test
     void testTasksWithoutTime_ShouldNotCauseOverlap() {
         InMemoryTaskManager manager = new InMemoryTaskManager();
