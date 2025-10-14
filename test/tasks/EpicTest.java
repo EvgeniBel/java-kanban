@@ -18,7 +18,7 @@ class EpicTest {
     }
 
     @Test
-    public void testSetterTask() {
+    public void testSetterEpic() {
         Task epic = new Task(25, "Epic_1", "Epic_1 description", StatusTask.NEW);
         epic.setId(15);
         epic.setName("epic_ONE");
