@@ -1,10 +1,11 @@
 package manager;
 
-
 import org.junit.jupiter.api.Test;
-import tasks.*;
+import tasks.StatusTask;
+import tasks.Task;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
