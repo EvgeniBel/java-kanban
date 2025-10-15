@@ -108,4 +108,45 @@ class InMemoryHistoryManagerTest {
         assertEquals(task2, history.get(1));
         assertEquals(task1, history.get(2));
     }
+
+    @Test
+    void testRemoveFromBeginningOfHistory() {
+        historyManager.addTask(task1);
+        historyManager.addTask(task2);
+        historyManager.addTask(task3);
+
+        historyManager.remove(task1.getId());
+        List<Task> history = historyManager.getHistory();
+
+        assertEquals(2, history.size());
+        assertEquals(task2, history.get(0));
+    }
+
+    @Test
+    void testRemoveFromMiddleOfHistory() {
+        historyManager.addTask(task1);
+        historyManager.addTask(task2);
+        historyManager.addTask(task3);
+
+        historyManager.remove(task2.getId());
+        List<Task> history = historyManager.getHistory();
+
+        assertEquals(2, history.size());
+        assertEquals(task1, history.get(0));
+        assertEquals(task3, history.get(1));
+    }
+
+    @Test
+    void testRemoveFromEndOfHistory() {
+        historyManager.addTask(task1);
+        historyManager.addTask(task2);
+        historyManager.addTask(task3);
+
+        historyManager.remove(task3.getId());
+        List<Task> history = historyManager.getHistory();
+
+        assertEquals(2, history.size());
+        assertEquals(task1, history.get(0));
+        assertEquals(task2, history.get(1));
+    }
 }

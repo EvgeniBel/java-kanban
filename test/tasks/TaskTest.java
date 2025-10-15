@@ -3,6 +3,7 @@ package tasks;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class TaskTest {
 
@@ -32,5 +33,12 @@ class TaskTest {
         Task task1 = new Task(1, "Task_1", "Task_1 description", StatusTask.NEW);
         Task task2 = new Task(1, "Task_5", "another description", StatusTask.IN_PROGRESS);
         assertEquals(task1, task2, "Экземпляры с одинаковым ID должны быть равны. Неправильная логика метода equals().Необходимо сравнение по ID");
+    }
+
+    @Test
+    void testTasksWithDifferentIdAreNotEqual() {
+        Task task1 = new Task(1, "Task 1", "Description 1", StatusTask.NEW);
+        Task task2 = new Task(2, "Task 1", "Description 1", StatusTask.NEW);
+        assertNotEquals(task1, task2, "Экземпляры с разными ID не должны быть равны. Неправильная логика метода equals().Необходимо сравнение по ID");
     }
 }
