@@ -31,6 +31,6 @@ class TaskTest {
     public void testTasksWithTheSameIdAreEqual() {
         Task task1 = new Task(1, "Task_1", "Task_1 description", StatusTask.NEW);
         Task task2 = new Task(1, "Task_5", "another description", StatusTask.IN_PROGRESS);
-        assertEquals(task1, task2, "Экземпляры с одинаковым ID должны быть равны");
+        assertEquals(task1, task2, "Экземпляры с одинаковым ID должны быть равны. Неправильная логика метода equals().Необходимо сравнение по ID");
     }
 }
