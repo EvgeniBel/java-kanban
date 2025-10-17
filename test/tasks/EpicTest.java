@@ -18,8 +18,8 @@ class EpicTest {
     }
 
     @Test
-    public void testSetterTask() {
-        Task epic = new Task(25, "Epic_1", "Epic_1 description", StatusTask.NEW);
+    public void testSetterEpic() {
+        Epic epic = new Epic(25, "Epic_1", "Epic_1 description", StatusTask.NEW);
         epic.setId(15);
         epic.setName("epic_ONE");
         epic.setDescription("epic_ONE description");
@@ -45,7 +45,14 @@ class EpicTest {
     public void testEpicsWithTheSameIdAreEqual() {
         Epic epic1 = new Epic(1, "Task_1", "Epic_1 description", StatusTask.NEW);
         Epic epic2 = new Epic(1, "Task_5", "another description", StatusTask.IN_PROGRESS);
-        assertEquals(epic1, epic2, "Экземпляры с одинаковым ID должны быть равны");
+        assertEquals(epic1, epic2, "Экземпляры с одинаковым ID должны быть равны. Неправильная логика метода equals(). Необходимо сравнение по ID");
+    }
+
+    @Test
+    void testEpicsWithDifferentIdAreNotEqual() {
+        Epic epic1 = new Epic(1, "Epic 1", "Description 1", StatusTask.NEW);
+        Epic epic2 = new Epic(2, "Epic 1", "Description 1", StatusTask.NEW);
+        assertNotEquals(epic1, epic2, "Экземпляры с разными ID не должны быть равны. Неправильная логика метода equals(). Необходимо сравнение по ID");
     }
 
     @Test

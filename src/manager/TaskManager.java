@@ -6,6 +6,7 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     //Получение списка
@@ -15,7 +16,7 @@ public interface TaskManager {
 
     ArrayList<Subtask> getSubtasks();
 
-    ArrayList<Integer> getEpicSubtasks(int epicId);
+    ArrayList<Subtask> getEpicSubtasks(int epicId);
 
     //Получение по индексу
     Task getTasks(int id);
@@ -54,4 +55,6 @@ public interface TaskManager {
     void updateEpicStatus(int epicId);
 
     List<Task> getHistory();
+
+    Set<Task> getPrioritizedTasks();
 }

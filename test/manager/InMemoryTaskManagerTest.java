@@ -1,188 +1,191 @@
 package manager;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
 import tasks.StatusTask;
-import tasks.Subtask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
+class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
-    TaskManager manager;
-    Task task1;
-    Task task2;
-    Task task3;
-
-    @BeforeEach
-    public void initManager() {
-        manager = Managers.getDefault();
-        task1 = new Task("Task_1", "Task_1 description", StatusTask.NEW);
-        task2 = new Task("Task_2", "Task_2 description", StatusTask.NEW);
-        task3 = new Task("Task_3", "Task_3 description", StatusTask.NEW);
+    @Override
+    protected InMemoryTaskManager createTaskManager() {
+        return new InMemoryTaskManager();
     }
 
     @Test
-    public void testAddNewTask() {
-        int taskId = manager.addNewTask(task1);
-        Task savedTask = manager.getTasks(taskId);
+    void testTasksAreStoredInMemory() {
+        Task task = new Task("Task", "Description", StatusTask.NEW);
+        int taskId = taskManager.addNewTask(task);
 
-        assertTrue(taskId > 0, "Генератор ID не работает");
-        assertNotNull(savedTask, "Задача не найдена.");
-        assertEquals(task1, savedTask, "Задачи не совпадают.");
-
-        List<Task> tasks = manager.getTasks();
-
-        assertNotNull(tasks, "Задачи не возвращаются.");
-        assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task1, tasks.get(0), "Задачи не совпадают.");
+        assertTrue(taskManager.getTasks().contains(task));
+        assertEquals(task, taskManager.getTasks(taskId));
     }
 
     @Test
-    public void testAddNewEpiEndNewSubtask() {
-        Epic epic = new Epic("epic_1", "description", StatusTask.NEW);
-        int epicId = manager.addNewEpic(epic);
-        Subtask subtask = new Subtask("Sutask_1", "description", StatusTask.NEW, epicId);
-        int subtaskId = manager.addNewSubtask(subtask);
-        List<Epic> epics = manager.getEpics();
-        List<Subtask> subtasks = manager.getSubtasks();
-        String messageErrorGenId = "Генератор ID не работает";
+    void testPrioritizedTasksAreCorrectlySorted() {
+        LocalDateTime now = LocalDateTime.now();
 
-        assertTrue(epicId > 0, messageErrorGenId);
-        assertNotNull(epics, "Эпики не возвращаются.");
-        assertEquals(1, epics.size(), "Неверное количество эпиков.");
-        assertEquals(epic, epics.get(0), "Эпики не совпадают.");
+        Task task1 = new Task("Task1", "Description", StatusTask.NEW,
+                Duration.ofMinutes(30), now.plusHours(3));
+        Task task2 = new Task("Task2", "Description", StatusTask.NEW,
+                Duration.ofMinutes(45), now.plusHours(1));
 
-        assertTrue(subtaskId > 0, messageErrorGenId);
-        assertNotNull(subtasks, "Сабтаски не возвращаются.");
-        assertEquals(1, subtasks.size(), "Неверное количество Сабтасков.");
-        assertEquals(subtask, subtasks.get(0), "Сабтаски не совпадают.");
+        taskManager.addNewTask(task1);
+        taskManager.addNewTask(task2);
+
+        List<Task> prioritized = List.copyOf(taskManager.getPrioritizedTasks());
+        assertEquals(task2, prioritized.get(0)); // Самый ранний
     }
 
     @Test
-    public void testUpdateTask() {
+    void testTimeOverlapScenarios() {
+        LocalDateTime baseTime = LocalDateTime.of(2025, 10, 1, 21, 0);
+        Duration duration = Duration.ofHours(1);
+
+        InMemoryTaskManager manager = new InMemoryTaskManager();
+
+        // Первая задача: 21:00 - 22:00
+        Task task1 = new Task("Task 1", "Description", StatusTask.NEW, duration, baseTime);
+        manager.addNewTask(task1);
+
+        // Пересекающаяся задача: 21:30 - 22:30 (пересекается с первой)
+        Task overlappingTask = new Task("Overlapping", "Description", StatusTask.NEW,
+                duration, baseTime.plusMinutes(30));
+
+        // Должно выбросить исключение из-за пересечения времени
+        assertThrows(ManagerSaveException.class, () -> manager.addNewTask(overlappingTask),
+                "Должно быть выброшено исключение при пересечении временных интервалов");
+
+        // Непересекающаяся задача (после): 22:00 - 23:00
+        Task nonOverlappingAfter = new Task("After", "Description", StatusTask.NEW,
+                duration, baseTime.plusHours(2));
+        assertDoesNotThrow(() -> manager.addNewTask(nonOverlappingAfter),
+                "Не должно быть исключения для непересекающихся задач (после)");
+
+        // Непересекающаяся задача (до): 20:00 - 21:00
+        Task nonOverlappingBefore = new Task("Before", "Description", StatusTask.NEW,
+                duration, baseTime.minusHours(2));
+        assertDoesNotThrow(() -> manager.addNewTask(nonOverlappingBefore),
+                "Не должно быть исключения для непересекающихся задач (до)");
+    }
+
+    @Test
+    void testDifferentOverlapScenarios() {
+        LocalDateTime baseTime = LocalDateTime.of(2025, 1, 1, 10, 0);
+        Duration duration = Duration.ofHours(1);
+
+        // Задача начинается раньше, но пересекается
+        {
+            InMemoryTaskManager manager = new InMemoryTaskManager();
+            Task baseTask = new Task("Task", "Description", StatusTask.NEW, duration, baseTime);
+            manager.addNewTask(baseTask);
+
+            Task overlapStart = new Task("Overlap Start", "Description", StatusTask.NEW,
+                    Duration.ofMinutes(90), baseTime.minusMinutes(30));
+            assertThrows(ManagerSaveException.class, () -> manager.addNewTask(overlapStart),
+                    "Задача, начинающаяся раньше и заканчивающаяся во время базовой, должна пересекаться");
+        }
+
+        // Задача пересекается c существующей и заканчивается позже
+        {
+            InMemoryTaskManager manager = new InMemoryTaskManager();
+            Task baseTask = new Task("Task", "Description", StatusTask.NEW, duration, baseTime);
+            manager.addNewTask(baseTask);
+
+            Task overlapEnd = new Task("Overlap End", "Description", StatusTask.NEW,
+                    Duration.ofMinutes(90), baseTime.plusMinutes(30));
+            assertThrows(ManagerSaveException.class, () -> manager.addNewTask(overlapEnd),
+                    "Задача, начинающаяся во время базовой и заканчивающаяся позже, должна пересекаться");
+        }
+
+        // Задача полностью внутри существующей задачи
+        {
+            InMemoryTaskManager manager = new InMemoryTaskManager();
+            Task baseTask = new Task("Task", "Description", StatusTask.NEW, duration, baseTime);
+            manager.addNewTask(baseTask);
+
+            Task inside = new Task("Task2", "Description", StatusTask.NEW,
+                    Duration.ofMinutes(30), baseTime.plusMinutes(15));
+            assertThrows(ManagerSaveException.class, () -> manager.addNewTask(inside),
+                    "Задача полностью внутри базовой должна пересекаться");
+        }
+
+        // Задача полностью пересекается с существующей
+        {
+            InMemoryTaskManager manager = new InMemoryTaskManager();
+            Task baseTask = new Task("Base", "Description", StatusTask.NEW, duration, baseTime);
+            manager.addNewTask(baseTask);
+
+            Task contains = new Task("Contains", "Description", StatusTask.NEW,
+                    Duration.ofHours(2), baseTime.minusMinutes(30));
+            assertThrows(ManagerSaveException.class, () -> manager.addNewTask(contains),
+                    "Задача, полностью содержащая базовую, должна пересекаться");
+        }
+    }
+
+    @Test
+    void testTasksWithoutTime_ShouldNotCauseOverlap() {
+        InMemoryTaskManager manager = new InMemoryTaskManager();
+
+        Task task1 = new Task("Task 1", "Description 1", StatusTask.NEW); // Без времени
+        Task task2 = new Task("Task 2", "Description 2", StatusTask.NEW,
+                Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 10, 0)); // С временем
+
+        manager.addNewTask(task1);
+
+        assertDoesNotThrow(() -> manager.addNewTask(task2),
+                "Не должно быть исключения когда одна задача без времени");
+    }
+
+    @Test
+    void testBothTasksWithoutTime_ShouldNotCauseOverlap() { // Задачи без времени
+        InMemoryTaskManager manager = new InMemoryTaskManager();
+
+        Task task1 = new Task("Task 1", "Description 1", StatusTask.NEW);
+        Task task2 = new Task("Task 2", "Description 2", StatusTask.NEW);
+
+        manager.addNewTask(task1);
+
+        assertDoesNotThrow(() -> manager.addNewTask(task2),
+                "Не должно быть исключения, когда обе задачи без времени");
+    }
+
+    @Test
+    void testTasksWithNonOverlappingTime_ShouldNotThrowException() { // Задачи не пересекаются
+        InMemoryTaskManager manager = new InMemoryTaskManager();
+
+        Task task1 = new Task("Task 1", "Description 1", StatusTask.NEW,
+                Duration.ofHours(1), LocalDateTime.of(2025, 1, 1, 10, 0));
+        Task task2 = new Task("Task 2", "Description 2", StatusTask.NEW,
+                Duration.ofHours(1), LocalDateTime.of(2025, 1, 1, 14, 0));
+
+        manager.addNewTask(task1);
+
+        assertDoesNotThrow(() -> manager.addNewTask(task2),
+                "Не должно быть исключения при непересекающихся временных интервалах");
+    }
+
+    @Test
+    void testUpdateTaskWithOverlappingTime_ShouldThrowException() {
+        InMemoryTaskManager manager = new InMemoryTaskManager();
+
+        Task task1 = new Task("Task 1", "Description 1", StatusTask.NEW,
+                Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 10, 0));
+        Task task2 = new Task("Task 2", "Description 2", StatusTask.NEW,
+                Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 12, 0));
+
         int task1Id = manager.addNewTask(task1);
-        task2 = new Task(task1Id, "task_2", "description", StatusTask.IN_PROGRESS);
-        manager.updateTask(task2);
-        assertEquals(task2, manager.getTasks(task1Id), "Task не обновился");
-    }
+        manager.addNewTask(task2);
 
-    @Test
-    public void testDeleteTask() {
-        int task1Id = manager.addNewTask(task1);
-        manager.deleteTask(task1Id);
-        assertNull(manager.getTasks(task1Id), "Task not delete");
-    }
+        Task updatedTask1 = new Task(task1Id, "Updated Task 1", "Updated Description", StatusTask.NEW,
+                Duration.ofHours(3), LocalDateTime.of(2024, 1, 1, 11, 0)); // Теперь пересекается
 
-
-    //создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер
-    @Test
-    public void testImmutabilityOfTheTaskWhenAddedToTheManager() {
-        Task taskOriginal = new Task("Test_1", "Description", StatusTask.NEW);
-        String name = taskOriginal.getName();
-        String despetion = taskOriginal.getDescription();
-        int id = taskOriginal.getId();
-        StatusTask status = taskOriginal.getStatus();
-
-        int taskId = manager.addNewTask(taskOriginal);
-        Task taskAfterAdd = manager.getTasks(taskId);
-        assertEquals(name, taskAfterAdd.getName(), "Поле name изменилось");
-        assertEquals(despetion, taskAfterAdd.getDescription(), "Поле despetion изменилось");
-        assertEquals(status, taskAfterAdd.getStatus(), "Поле  status изменилось");
-    }
-
-    // проверьте, что задачи с заданным id и сгенерированным id не конфликтуют внутри менеджера;
-    @Test
-    public void testTasksInitIdAndGeneratedIDontConflict() {
-        Task taskGenId = new Task("Test_gen", "Dascription", StatusTask.NEW);
-        int genId = manager.addNewTask(taskGenId);
-        Task taskInitId = new Task(manager.getTasks(genId));
-        taskInitId.setStatus(StatusTask.IN_PROGRESS);
-        manager.updateTask(taskInitId);
-        int initId = manager.addNewTask(taskInitId);
-
-        assertNotNull(manager.getTasks(), "Менеджер пуст");
-        assertNotNull(manager.getTasks(genId), "Задача с генерированным ID не существует");
-        assertNotNull(manager.getTasks(initId), "Задача с инициализированным ID не существует");
-        assertNotEquals(genId, initId, "ID конфликтуют");
-        assertEquals(2, manager.getTasks().size(), "Некорректно добавлены задачи");
-    }
-
-    //проверьте, что InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id;
-    @Test
-    public void testManagerAddDifferentTypeAndSearchId() {
-        Task task = new Task("Test_1", "Dascription", StatusTask.NEW);
-        int taskId = manager.addNewTask(task);
-        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
-        int epicId = manager.addNewEpic(epic);
-        Subtask subtask = new Subtask("Subtask", "Descreption", StatusTask.NEW, epic.getId());
-        Integer subtaskId = manager.addNewSubtask(subtask);
-
-        assertEquals(1, manager.getTasks().size(), "Должен быть 1 task ");
-        assertEquals(1, manager.getEpics().size(), "Должен быть 1 epic");
-        assertEquals(1, manager.getSubtasks().size(), "Должен быть 1 subtask");
-
-        String massageIdMatch = "ID должны совпадать";
-        assertEquals(taskId, manager.getTasks(taskId).getId(), massageIdMatch);
-        assertEquals(epicId, manager.getEpic(epicId).getId(), massageIdMatch);
-        assertEquals(subtaskId, manager.getSubtasks(subtaskId).getId(), massageIdMatch);
-
-        assertEquals(task, manager.getTasks(taskId), "Менеджер должен возвращать добавленную задачу");
-        assertEquals(epic, manager.getEpic(epicId), "Менеджер должен возвращать добавленный эпик");
-        assertEquals(subtask, manager.getSubtasks(subtaskId), "Менеджер должен возвращать добавленную подзадачу");
-    }
-
-    @Test
-    public void testDeleteAllTask() {
-        int task1Id = manager.addNewTask(task1);
-        int task2Id = manager.addNewTask(task2);
-        int task3Id = manager.addNewTask(task3);
-        manager.deleteAllTasks();
-        assertTrue(manager.getTasks().isEmpty());
-    }
-
-    @Test
-    public void testDeleteAllSubtasks() {
-        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
-        int epicId = manager.addNewEpic(epic);
-        Subtask subtask1 = new Subtask("Subtask1", "Descreption1", StatusTask.NEW, epic.getId());
-        Subtask subtask2 = new Subtask("Subtask2", "Descreption2", StatusTask.NEW, epic.getId());
-        Integer subtaskId1 = manager.addNewSubtask(subtask1);
-        Integer subtaskId2 = manager.addNewSubtask(subtask2);
-
-        manager.getSubtasks(subtaskId1);
-        manager.getSubtasks(subtaskId2);
-        assertNotEquals(0, manager.getSubtasks().size(), "Сабтаски не добавлены в историю");
-
-        manager.deleteAllSubtasks();
-        assertTrue(manager.getSubtasks().isEmpty(), "Сабтаски не удалены");
-        assertTrue(manager.getHistory().isEmpty(), "Сабтаски из истории не удалены");
-    }
-
-    @Test
-    public void testDeleteAllEpics() {
-        Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
-        Epic epic2 = new Epic("Epic2", "Description", StatusTask.IN_PROGRESS);
-        int epicId = manager.addNewEpic(epic);
-        Subtask subtask1 = new Subtask("Subtask1", "Descreption1", StatusTask.NEW, epic.getId());
-        Subtask subtask2 = new Subtask("Subtask2", "Descreption2", StatusTask.NEW, epic.getId());
-        Integer subtaskId1 = manager.addNewSubtask(subtask1);
-        Integer subtaskId2 = manager.addNewSubtask(subtask2);
-
-        manager.getSubtasks(subtaskId1);
-        manager.getSubtasks(subtaskId2);
-        manager.getEpic(epicId);
-        assertNotEquals(0, manager.getSubtasks().size(), "История не должна быть пустой");
-
-        manager.deleteAllEpics();
-
-        assertEquals(0, manager.getSubtasks().size(), "Сабтаски не удалены");
-        assertTrue(manager.getSubtasks().isEmpty(), "Сабтаски не удалены");
-        assertEquals(0, manager.getEpics().size(), "Эпики не удалены");
-        assertTrue(manager.getEpics().isEmpty(), "Эпики не удалены");
+        assertThrows(ManagerSaveException.class, () -> manager.updateTask(updatedTask1),
+                "Должно быть исключение при обновлении задачи с пересекающимся временем");
     }
 }
