@@ -34,8 +34,8 @@ public class BaseHttpHandler {
         byte[] response = text.getBytes(DEFAULT_CHARSET);
         exchange.getResponseHeaders().add("Content-Type", "application/json; charset=" + DEFAULT_CHARSET);
         exchange.sendResponseHeaders(statusCode, response.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(response);
+        try (OutputStream responseBody = exchange.getResponseBody()) {
+            responseBody.write(response);
         }
     }
 
@@ -66,8 +66,8 @@ public class BaseHttpHandler {
     }
 
     protected String readText(HttpExchange exchange) throws IOException {
-        InputStream inputStream = exchange.getRequestBody();
-        return new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
+        InputStream requestBody = exchange.getRequestBody();
+        return new String(requestBody.readAllBytes(), DEFAULT_CHARSET);
     }
 
     protected <T> T parseJson(String json, Class<T> clazz) throws JsonSyntaxException {
