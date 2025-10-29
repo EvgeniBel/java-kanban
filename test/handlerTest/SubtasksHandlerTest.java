@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SubtasksHandlerTest extends BaseHttpTest {
 
     @Test
-    void testCreateSubtask_WithTime_ShouldReturnCreatedSubtask() throws Exception {
+    void testCreateSubtaskWithTime() throws Exception {
         // Создаем эпик
         Epic epic = new Epic("Parent Epic", "Description", StatusTask.NEW);
         String epicJson = toJson(epic);
@@ -38,7 +38,7 @@ public class SubtasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testCreateSubtask_WithTimeOverlap_ShouldReturnNotAcceptable() throws Exception {
+    void testCreateSubtaskTimeOverlap() throws Exception {
         // Создаем эпик
         Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
         String epicJson = toJson(epic);

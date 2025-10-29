@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PrioritizedHandlerTest extends BaseHttpTest {
 
     @Test
-    void testGetPrioritized_WithTasks_ShouldReturnSortedTasks() throws Exception {
+    void testGetPrioritizedTasksReturnsSorted() throws Exception {
         // Создаем задачи через GSON
         Task task2 = new Task("Task 2", "Description", StatusTask.NEW,
                 Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 10, 0));

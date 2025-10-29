@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HistoryHandlerTest extends BaseHttpTest {
 
     @Test
-    void testGetHistory_AfterViewingTasks_ShouldReturnHistory() throws Exception {
+    void testGetHistoryAfterViewingTasks() throws Exception {
         // Создаем задачи через GSON
         Task task1 = new Task("Task 1", "Description", StatusTask.NEW);
         Task task2 = new Task("Task 2", "Description", StatusTask.NEW);

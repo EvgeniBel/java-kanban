@@ -220,7 +220,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     // Тесты для статуса Epic
     @Test
-    void testEpicStatus_AllSubtasksNew() {
+    void testEpicStatusAllSubtasksNew() {
         Epic epic = new Epic("Test Epic", "Description", StatusTask.NEW);
         int epicId = taskManager.addNewEpic(epic);
 
@@ -233,7 +233,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testEpicStatus_AllSubtasksDone() {
+    void testEpicStatusAllSubtasksDone() {
         Epic epic = new Epic("Test Epic", "Description", StatusTask.NEW);
         int epicId = taskManager.addNewEpic(epic);
 
@@ -246,7 +246,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testEpicStatus_SubtasksNewAndDone() {
+    void testEpicStatusSubtasksNewAndDone() {
         Epic epic = new Epic("Test Epic", "Description", StatusTask.NEW);
         int epicId = taskManager.addNewEpic(epic);
 
@@ -259,7 +259,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testEpicStatus_AllSubtasksInProgress() {
+    void testEpicStatusAllSubtasksInProgress() {
         Epic epic = new Epic("Test Epic", "Description", StatusTask.NEW);
         int epicId = taskManager.addNewEpic(epic);
 
@@ -272,7 +272,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testEpicStatus_NoSubtasks() {
+    void testEpicStatusNoSubtasks() {
         Epic epic = new Epic("Test Epic", "Description", StatusTask.NEW);
         int epicId = taskManager.addNewEpic(epic);
 

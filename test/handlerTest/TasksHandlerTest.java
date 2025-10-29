@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TasksHandlerTest extends BaseHttpTest {
     @Test
-    void testGetAllTasks_WhenNoTasks_ShouldReturnEmptyList() throws Exception {
+    void testGetAllTasksWhenEmpty() throws Exception {
         HttpResponse<String> response = sendGet("/tasks");
         assertStatusCode(response, 200);
 
@@ -22,7 +22,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testCreateTask_ShouldReturnCreatedTask() throws Exception {
+    void testCreateTask() throws Exception {
         // Создаем объект задачи и сериализуем в JSON
         Task task = new Task("Test Task", "Test Description", StatusTask.NEW);
         String taskJson = toJson(task);
@@ -39,7 +39,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testCreateTask_WithTime_ShouldReturnCreatedTask() throws Exception {
+    void testCreateTaskWithTime() throws Exception {
         // Создаем задачу с временными параметрами
         Task task = new Task("Task With Time", "Description", StatusTask.NEW,
                 Duration.ofMinutes(90), // PT1H30M
@@ -56,7 +56,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testCreateTask_WithInvalidJson_ShouldReturnBadRequest() throws Exception {
+    void testCreateTaskWithInvalidJson() throws Exception {
         String invalidJson = "{ invalid json }";
 
         HttpResponse<String> response = sendPost("/tasks", invalidJson);
@@ -64,7 +64,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testGetTaskById_WhenTaskExists_ShouldReturnTask() throws Exception {
+    void testGetTaskByIdWhenTaskExists() throws Exception {
         // Создаем задачу через API
         Task task = new Task("Test Task", "Description", StatusTask.NEW);
         String taskJson = toJson(task);
@@ -82,13 +82,13 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testGetTaskById_WhenTaskNotExists_ShouldReturnNotFound() throws Exception {
+    void testGetTaskByIdWhenTaskNotExists() throws Exception {
         HttpResponse<String> response = sendGet("/tasks/999");
         assertStatusCode(response, 404);
     }
 
     @Test
-    void testUpdateTask_ShouldUpdateSuccessfully() throws Exception {
+    void testUpdateTask() throws Exception {
         // Создаем задачу
         Task task = new Task("Original Task", "Description", StatusTask.NEW);
         String taskJson = toJson(task);
@@ -111,7 +111,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testUpdateTask_WithTime_ShouldUpdateSuccessfully() throws Exception {
+    void testUpdateTaskWithTime() throws Exception {
         // Создаем задачу с временем
         Task task = new Task("Original Task", "Description", StatusTask.NEW,
                 Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 9, 0));
@@ -135,7 +135,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testDeleteTask_ShouldDeleteSuccessfully() throws Exception {
+    void testDeleteTask() throws Exception {
         // Создаем задачу
         Task task = new Task("Task to delete", "Description", StatusTask.NEW);
         String taskJson = toJson(task);
@@ -153,7 +153,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testDeleteAllTasks_ShouldDeleteAllTasks() throws Exception {
+    void testDeleteAllTasks() throws Exception {
         // Создаем несколько задач
         Task task1 = new Task("Task 1", "Desc 1", StatusTask.NEW);
         Task task2 = new Task("Task 2", "Desc 2", StatusTask.NEW);
@@ -177,7 +177,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testCreateTask_WithTimeOverlap_ShouldReturnNotAcceptable() throws Exception {
+    void testCreateTaskWithTimeOverlap() throws Exception {
         // Создаем первую задачу
         Task task1 = new Task("Task 1", "Description", StatusTask.NEW,
                 Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 10, 0));
@@ -197,7 +197,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testCreateTask_WithNoOverlap_ShouldSuccess() throws Exception {
+    void testCreateTaskWithNoOverlap() throws Exception {
         // Создаем первую задачу
         Task task1 = new Task("Task 1", "Description", StatusTask.NEW,
                 Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 10, 0));
@@ -219,7 +219,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testCreateMultipleTasks_ShouldAllBeReturned() throws Exception {
+    void testCreateMultipleTasks() throws Exception {
         // Создаем несколько задач
         Task task1 = new Task("Task 1", "Description 1", StatusTask.NEW);
         Task task2 = new Task("Task 2", "Description 2", StatusTask.IN_PROGRESS);
@@ -254,7 +254,7 @@ public class TasksHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testCreateTask_WithNullTime_ShouldSuccess() throws Exception {
+    void testCreateTaskWithNullTime() throws Exception {
         // Создаем задачу без времени (null значения)
         Task task = new Task("Task Without Time", "Description", StatusTask.NEW);
         // Явно устанавливаем null, если конструктор этого не делает

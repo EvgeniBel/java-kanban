@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class EpicsHandlerTest extends BaseHttpTest {
 
     @Test
-    void testCreateEpic_ShouldReturnCreatedEpic() throws Exception {
+    void testCreateEpic() throws Exception {
         // Используем GSON для сериализации
         Epic epic = new Epic("Test Epic", "Test Epic Description", StatusTask.NEW);
         String epicJson = toJson(epic);
@@ -27,7 +27,7 @@ public class EpicsHandlerTest extends BaseHttpTest {
     }
 
     @Test
-    void testUpdateEpicStatus_WhenSubtasksCompleted_ShouldUpdateEpicStatus() throws Exception {
+    void testEpicStatusWhenSubtasksDone() throws Exception {
         // Создаем эпик через GSON
         Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
         String epicJson = toJson(epic);
