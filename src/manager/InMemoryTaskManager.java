@@ -62,12 +62,6 @@ public class InMemoryTaskManager implements TaskManager {
                 .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo)
                 .orElse(null);
-        //Самое позднее время завершения
-        LocalDateTime lastTimeEnd = subtask.stream()
-                .map(Subtask::getEndTime)
-                .filter(Objects::nonNull)
-                .max(LocalDateTime::compareTo)
-                .orElse(null);
         //Суммарная продолжительнось
         Duration totalDuration = subtask.stream()
                 .map(Subtask::getDuration)
@@ -190,7 +184,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         Task oldTask = listTask.get(task.getId());
         if (oldTask != null && oldTask.getStartTime() != null) {
-            priorityTaskList.remove(oldTask);
+            priorityTaskList.removeIf(t -> t.getId() == task.getId());
         }
         listTask.put(task.getId(), task);
 
@@ -216,7 +210,7 @@ public class InMemoryTaskManager implements TaskManager {
             throw new ManagerSaveException("Подзадача пересекается по времени с существующей задачей");
         }
 
-        if (subtask != null && listSubtask.containsKey(subtask.getId())) {
+        if (listSubtask.containsKey(subtask.getId())) {
             Subtask oldSubtask = listSubtask.get(subtask.getId());
             if (oldSubtask.getStartTime() != null) {
                 priorityTaskList.remove(oldSubtask);
