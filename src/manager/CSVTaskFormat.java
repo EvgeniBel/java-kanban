@@ -13,8 +13,7 @@ public class CSVTaskFormat {
     public static String taskToString(Task task) {
         String durationStr = task.getDuration() != null ? String.valueOf(task.getDuration().toMinutes()) : "";
         String startTimeStr = task.getStartTime() != null ? String.valueOf(task.getStartTime()) : "";
-        if (task instanceof Subtask) {
-            Subtask subtask = (Subtask) task;
+        if (task instanceof Subtask subtask) {
             return String.format("%d,%s,%s,%s,%s,%d,%s,%s\n",
                     subtask.getId(),
                     SUBTASK,
@@ -63,7 +62,7 @@ public class CSVTaskFormat {
             try {
                 duration = Duration.ofMinutes(Long.parseLong(parts[6]));
             } catch (NumberFormatException e) {
-                System.err.println("Ошибка парсинга duration: " + parts[6]);
+                throw new ManagerSaveException("Неверный формат duration: " + parts[6], e);
             }
         }
         if (parts.length > 7 && !parts[7].isEmpty()) {
